@@ -5,6 +5,7 @@ Bug Bounty Hunting Recon Script
 
 PyBrute uses several subdomain enumeration tools and wordlists to create a unique list of subdmains that are passed to EyeWitness for reporting with categorized screenshots, server response headers and signature based default credential checking. *(resources are saved to ./bin and output is saved to ./Output/PyBrute)*
 
+Initial Install: *python PyBrute.py --install*
 
 **_NOTE: This is an active recon – only perform on applications that you have permission to test against._**
 
@@ -24,6 +25,8 @@ PyBrute uses several subdomain enumeration tools and wordlists to create a uniqu
 
 ##### Usage
 ````
+First Step - Install Tools: python PyBrute.py --install
+
 Example 1: python PyBrute.py -d example.com
 Uses subdomain example.com with no brutefoce (Sublist3r enumall, Knock)
 
