@@ -9,14 +9,14 @@ PyBrute uses several subdomain enumeration tools and wordlists to create a uniqu
 **_NOTE: This is an active recon – only perform on applications that you have permission to test against._**
 
 ##### Tools leveraged:
-######Subdomain Enumeraton Tools:
+###### Subdomain Enumeraton Tools:
 1. [Sublist3r](https://github.com/aboul3la/Sublist3r) by Ahmed Aboul-Ela 
 2. [enumall](https://github.com/jhaddix/domain) by Jason Haddix 
 3. [Knock](https://github.com/guelfoweb/knock) by Gianni Amato 
 4. [Subbrute](https://github.com/TheRook/subbrute) by TheRook 
 5. [massdns](https://github.com/blechschmidt/massdns) by B. Blechschmidt 
 
-######Reporting + Wordlists:
+###### Reporting + Wordlists:
 - [EyeWitness](https://github.com/ChrisTruncer/EyeWitness) by ChrisTruncer  
 - [SecList](https://github.com/danielmiessler/SecLists) (DNS Recon List) by Daniel Miessler 
 - [LevelUp All.txt Subdomain List](https://github.com/jhaddix) by Jason Haddix 
