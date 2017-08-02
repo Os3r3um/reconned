@@ -21,7 +21,7 @@ Initial Install: *python PyBrute.py --install*
 ###### Reporting + Wordlists:
 - [EyeWitness](https://github.com/ChrisTruncer/EyeWitness) by ChrisTruncer  
 - [SecList](https://github.com/danielmiessler/SecLists) (DNS Recon List) by Daniel Miessler 
-- [LevelUp All.txt Subdomain List](https://github.com/jhaddix) by Jason Haddix 
+- [LevelUp All.txt Subdomain List](https://gist.github.com/jhaddix/86a06c5dc309d08580a018c66354a056) by Jason Haddix 
 
 ##### Usage
 ````
