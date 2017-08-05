@@ -355,4 +355,4 @@ if __name__ == "__main__":
                 subdomainfile()
         else:
             print("Please provide a domain. Ex. -d example.com")
-    print("PyBute Out")
+    print("PyBrute Out")
