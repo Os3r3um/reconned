@@ -3,7 +3,7 @@ Bug Bounty Hunting Recon Script
 
 **Gist:** Some ~~terrible~~ continually updated python code leveraging some awesome tools that I use for bug bounty reconnaissance. 
 
-PyBrute uses several subdomain enumeration tools and wordlists to create a unique list of subdmains that are passed to EyeWitness for reporting with categorized screenshots, server response headers and signature based default credential checking. *(resources are saved to ./bin and output is saved to ./Output/PyBrute)*
+PyBrute uses several subdomain enumeration tools and wordlists to create a unique list of subdmains that are passed to EyeWitness for reporting with categorized screenshots, server response headers and signature based default credential checking. *(resources are saved to ./bin and output is saved to ./output)*
 
 Initial Install: *python PyBrute.py --install*
 
@@ -25,7 +25,9 @@ Initial Install: *python PyBrute.py --install*
 
 ##### Usage
 ````
-First Step - Install Tools: python PyBrute.py --install
+First Step:
+Install Required Python Modules: sudo pip install -r requirements.txt
+Install Tools: python PyBrute.py --install
 
 Example 1: python PyBrute.py -d example.com
 Uses subdomain example.com with no brutefoce (Sublist3r enumall, Knock)
@@ -41,12 +43,14 @@ Uses subdomain example.com and only Sublist3r (+subbrute)
 
 Note: --bruteall must be used with the -b flag
 ````
+
 Option | Description
 ------ | --- 
 --install/--upgrade  |  Both do the same function – install all prerequisite tools (Kali is a prerequisite AFAIK)
 --vpn   |   Check if you are on VPN (update with your provider)
 --quick |   Use ONLY Sublis3r's subdomain methods (+ subbrute)
 --bruteall  |   Bruteforce with JHaddix All.txt List instead of SecList
+--fresh  |   Delete old data from output folder
 -d  |   The domain you want to preform recon on
 -b  |   Bruteforce with subbrute/massdns and SecList wordlist
 -s n    |   Only HTTPs domains
@@ -54,3 +58,4 @@ Option | Description
 
 ##### Updates
 - 07-15-2017: Updated to include error handling and updated reconnaissance  techniques from Bugcrowd's [LevelUp](https://pages.bugcrowd.com/level-up-virtual-hacking-conference) Conference (including subbrute/masscan and subdomain lists) - influenced by Jason Haddix's talk [Bug Hunter's Methodology 2.0](https://t.co/Umhj4NUtJ5)
+- 08-09-2017: Various fixes (+ phantomjs error), added --fresh option, removed redundant PyBrute folder from output and added pip requirements.txt

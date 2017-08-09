@@ -1,11 +1,9 @@
-import argparse, os, requests, time, csv, datetime, glob
+import argparse, os, requests, time, csv, datetime, glob, subprocess
 from signal import signal, alarm, SIGALRM
 
 today = datetime.date.today()
 
 __author__ = 'Caleb Kinney'
-
-global url, secure
 
 
 def get_args():
@@ -29,11 +27,13 @@ def get_args():
         '-q', '--quick', help='Quick', nargs='?', default=False)
     parser.add_argument(
         '--bruteall', help='Bruteforce JHaddix All', nargs='?', default=False)
+    parser.add_argument(
+        '--fresh', help='Remove output Folder', nargs='?', default=False)
 
     return parser.parse_args()
 
 
-newpath = r'Output/PyBrute'
+newpath = r'output'
 if not os.path.exists(newpath):
     os.makedirs(newpath)
 
@@ -56,7 +56,7 @@ def banner():
             print("  - " + file)
         signal(SIGALRM, lambda x: 1 / 0)
         try:
-            alarm(25)
+            alarm(10)
             RemoveQ = raw_input("\nWould you like to remove the files? [y/n]: ")
             if RemoveQ.lower() == "y":
                 os.system("rm *.csv")
@@ -65,14 +65,14 @@ def banner():
             else:
                 print("Files not removed\nStarting PyBrute...")
         except:
-            print("Error or No User Input\nFiles not removed\nStarting PyBrute...")
+            print("\nError or No User Input\nFiles not removed\nStarting PyBrute...")
         time.sleep(2)
 
 
 def sublist3r():
     if vpn is not False:
         vpncheck()
-    sublist3rFileName = ("Output/PyBrute/" + domain + "_sublist3r.txt")
+    sublist3rFileName = ("output/" + domain + "_sublist3r.txt")
     Subcmd = (("python bin/Sublist3r/sublist3r.py -v -t 15 -d %s -o " + sublist3rFileName) % (domain))
     print("\n\033[1;31mRunning Command: \033[1;37m" + Subcmd)
     os.system(Subcmd)
@@ -83,7 +83,7 @@ def sublist3r():
 def sublist3rBrute():
     if vpn is not False:
         vpncheck()
-    sublist3rFileName = ("Output/PyBrute/" + domain + "_sublist3r.txt")
+    sublist3rFileName = ("output/" + domain + "_sublist3r.txt")
     Subcmd = (("python bin/Sublist3r/sublist3r.py -v -b -t 15 -d %s -o " + sublist3rFileName) % (domain))
     print("\n\033[1;31mRunning Command: \033[1;37m" + Subcmd)
     os.system(Subcmd)
@@ -107,13 +107,13 @@ def massdns():
         vpncheck()
     if bruteall is not False:
         massdnsCMD = (
-            "./bin/subbrute/subbrute.py -s ./bin/sublst/all.txt " + domain + " | ./bin/massdns/bin/massdns -r resolvers.txt -t A -a -o -w ./Output/PyBrute/" + domain + "-massdns.txt -")
+            "./bin/subbrute/subbrute.py -s ./bin/sublst/all.txt " + domain + " | ./bin/massdns/bin/massdns -r resolvers.txt -t A -a -o -w ./output/" + domain + "-massdns.txt -")
         print("\n\033[1;31mRunning Command: \033[1;37m" + massdnsCMD)
         os.system(massdnsCMD)
         print("\n\033[1;31mMasscan Complete\033[1;37m")
     else:
         massdnsCMD = (
-            "./bin/subbrute/subbrute.py -s ./bin/sublst/sl-domains.txt " + domain + " | ./bin/massdns/bin/massdns -r resolvers.txt -t A -a -o -w ./Output/PyBrute/" + domain + "-massdns.txt -")
+            "./bin/subbrute/subbrute.py -s ./bin/sublst/sl-domains.txt " + domain + " | ./bin/massdns/bin/massdns -r resolvers.txt -t A -a -o -w ./output/" + domain + "-massdns.txt -")
         print("\n\033[1;31mRunning Command: \033[1;37m" + massdnsCMD)
         os.system(massdnsCMD)
         print("\n\033[1;31mMasscan Complete\033[1;37m")
@@ -130,7 +130,7 @@ def knockpy():
     os.system(knockpyCmd)
     try:
         filenameKnock = (rootdomainStrip + "*")
-        knockpyFilenameInit = ("Output/PyBrute/" + domain + "_knock.csv")
+        knockpyFilenameInit = ("output/" + domain + "_knock.csv")
         time.sleep(1)
         knockpySubs = []
         with open(knockpyFilenameInit, 'rb') as f:
@@ -144,9 +144,6 @@ def knockpy():
             f1.writelines("\n" + hosts)
         f1.close()
         time.sleep(1)
-    except:
-        pass
-    try:
         os.system("rm " + knockpyFilenameInit)
         os.system("rm " + filenameKnock + ".csv")
     except:
@@ -156,7 +153,7 @@ def knockpy():
 def eyewitness(filename):
     rootdomain = domain
     EWHTTPScriptIPS = (
-        "python bin/EyeWitness/EyeWitness.py -f " + filename + " --active-scan --no-prompt --headless  -d " + "Output/PyBrute/" + rootdomain + "-" + time.strftime(
+        "python bin/EyeWitness/EyeWitness.py -f " + filename + " --active-scan --no-prompt --headless  -d " + "output/" + rootdomain + "-" + time.strftime(
             '%m-%d-%y-%H-%M') + "-Sublist3r-EW ")
     if vpn is not False:
         print(
@@ -175,62 +172,76 @@ def upgradeFiles():
         os.system("rm -r bin")
         os.makedirs(binpath)
     sublist3rUpgrade = ("git clone https://github.com/aboul3la/Sublist3r.git ./bin/Sublist3r")
-    print("\n\033[1;31mRunning Command: \033[1;37m" + sublist3rUpgrade)
+    print("\n\033[1;31mInstalling Sublist3r \033[1;37m")
     os.system(sublist3rUpgrade)
     subInstallReq = ("sudo pip install -r bin/Sublist3r/requirements.txt")
-    print("\n\033[1;31mRunning Command: \033[1;37m" + subInstallReq)
     os.system(subInstallReq)
-    print("Sublis3r Installed")
+    print("Sublis3r Installed\n")
     eyeWitnessUpgrade = ("git clone https://github.com/ChrisTruncer/EyeWitness.git ./bin/EyeWitness")
-    print("\n\033[1;31mRunning Command: \033[1;37m" + eyeWitnessUpgrade)
+    print("\n\033[1;31mInstalling EyeWitness \033[1;37m" + eyeWitnessUpgrade)
     os.system(eyeWitnessUpgrade)
     eyeInstallReq = ("sudo bash bin/EyeWitness/setup/setup.sh")
-    print("\n\033[1;31mRunning Command: \033[1;37m" + eyeInstallReq)
+    print("\n\033[1;31mRunning Command: \033[1;37m")
     os.system(eyeInstallReq)
-    cpphantomjs = ("cp phantomjs bin/EyeWitness/bin/")
-    print("\n\033[1;31mRunning Command: \033[1;37m" + cpphantomjs)
+    if os.path.isfile("phantomjs") == False:
+        print("\nNo phantomjs File Found")
+        unameChk = subprocess.check_output(['uname', '-m'])
+        if "x86_64" in unameChk:
+            print("\nDownloading 64-Bit phantomjs")
+            os.system("wget -O phantomjs https://www.christophertruncer.com/InstallMe/kali2phantomjs")
+        elif "arm" in unameChk:
+            print("\nDownloading RaspberryPi phantomjs")
+            os.system(
+                "wget -O phantomjs https://github.com/fg2it/phantomjs-on-raspberry/releases/download/v2.1.1-wheezy-jessie-armv6/phantomjs")
+        else:
+            print("\nDownloading 32-Bit phantomjs")
+            os.system("wget -O phantomjs https://www.christophertruncer.com/InstallMe/phantom32kali2")
+        os.system("chmod +x phantomjs")
+    delGeco = ("rm gecko*")
+    os.system(delGeco)
+    cpphantomjs = ("cp phantomjs ./bin/EyeWitness/bin/")
     os.system(cpphantomjs)
     movephantomjs = ("mv phantomjs bin/")
-    print("\n\033[1;31mRunning Command: \033[1;37m" + movephantomjs)
     os.system(movephantomjs)
-    print("EyeWitness Installed")
+    print("\nEyeWitness Installed\n")
     enumallUpgrade = ("git clone https://github.com/jhaddix/domain.git ./bin/domain")
-    print("\n\033[1;31mRunning Command: \033[1;37m" + enumallUpgrade)
-    print("enumall Installed")
+    print("\n\033[1;31mInstalling Enumall \033[1;37m")
+    print("\nenumall Installed\n")
     os.system(enumallUpgrade)
     knockpyUpgrade = ("git clone https://github.com/guelfoweb/knock.git ./bin/knockpy")
-    print("\n\033[1;31mRunning Command: \033[1;37m" + knockpyUpgrade)
+    print("\n\033[1;31mInstalling Knock \033[1;37m")
     os.system(knockpyUpgrade)
-    print("Knockpy Installed")
+    print("\nKnockpy Installed\n")
     sublstUpgrade = ("git clone https://gist.github.com/jhaddix/86a06c5dc309d08580a018c66354a056 ./bin/sublst")
-    print("\n\033[1;31mRunning Command: \033[1;37m" + sublstUpgrade)
-    print("JHaddix All Domain List Installed")
+    print("\n\033[1;31mCopying JHaddix All Domain List: \033[1;37m")
+    print("\nJHaddix All Domain List Installed\n")
     os.system(sublstUpgrade)
     SLsublstUpgrade = (
         "wget -O ./bin/sublst/sl-domains.txt https://raw.githubusercontent.com/danielmiessler/SecLists/master/Discovery/DNS/sorted_knock_dnsrecon_fierce_recon-ng.txt")
-    print("\n\033[1;31mRunning Command: \033[1;37m" + sublstUpgrade)
-    print("SecList Domain List Installed")
+    print("\n\033[1;31mCopying SecList Domain List \033[1;37m")
+    print("\nSecList Domain List Installed\n")
     os.system(SLsublstUpgrade)
     subbruteUpgrade = ("git clone https://github.com/TheRook/subbrute.git ./bin/subbrute")
-    print("\n\033[1;31mRunning Command: \033[1;37m" + subbruteUpgrade)
+    print("\n\033[1;31mInstalling Subbrute \033[1;37m")
     os.system(subbruteUpgrade)
-    print("Subbrute Installed")
+    print("\nSubbrute Installed\n")
     massdnsUpgrade = ("git clone https://github.com/blechschmidt/massdns ./bin/massdns")
-    print("\n\033[1;31mRunning Command: \033[1;37m" + massdnsUpgrade)
+    print("\n\033[1;31mInstalling massdns \033[1;37m")
     os.system(massdnsUpgrade)
     massdnsMake = ("make -C ./bin/massdns")
     os.system("apt-get install libldns-dev -y")
     os.system(massdnsMake)
-    print("Massdns Installed")
+    print("\nMassdns Installed\n")
     os.system("cp ./bin/subbrute/resolvers.txt ./")
+    print("\n\033[1;31mAll tools installed \033[1;37m")
 
 
 def subdomainfile():
-    sublist3rFileName = ("Output/PyBrute/" + domain + "_sublist3r.txt")
+    sublist3rFileName = ("output/" + domain + "_sublist3r.txt")
     enumallFileName = (domain + ".lst")
-    subdomainAllFile = ("Output/PyBrute/" + domain + "-all.txt")
-    knockpyFileName = ("Output/PyBrute/" + domain + "_knock.csv.txt")
-    massdnsFileName = ("Output/PyBrute/" + domain + "-massdns.txt")
+    subdomainAllFile = ("output/" + domain + "-all.txt")
+    knockpyFileName = ("output/" + domain + "_knock.csv.txt")
+    massdnsFileName = ("output/" + domain + "-massdns.txt")
     try:
         with open(sublist3rFileName) as f:
             SubHosts = f.read().splitlines()
@@ -284,7 +295,7 @@ def subdomainfile():
     domainList = open(subdomainAllFile, 'r')
     uniqueDomains = set(domainList)
     domainList.close()
-    subdomainUniqueFile = ("Output/PyBrute/" + domain + "-unique.txt")
+    subdomainUniqueFile = ("output/" + domain + "-unique.txt")
     uniqueDomainsOut = open(subdomainUniqueFile, 'w')
     for domains in uniqueDomains:
         domains = domains.replace('\n', '')
@@ -335,6 +346,11 @@ if __name__ == "__main__":
     vpn = args.vpn
     quick = args.quick
     bruteall = args.bruteall
+    fresh = args.fresh
+    if fresh is not False:
+        os.system("rm -r output")
+        newpath = r'output'
+        os.makedirs(newpath)
     if install is not False:
         upgradeFiles()
     elif upgrade is not False:
@@ -354,5 +370,5 @@ if __name__ == "__main__":
                 knockpy()
                 subdomainfile()
         else:
-            print("Please provide a domain. Ex. -d example.com")
-    print("PyBrute Out")
+            print("\nPlease provide a domain. Ex. -d example.com")
+    print("\nPyBrute Out")
