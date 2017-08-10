@@ -71,8 +71,7 @@ def banner():
 
 
 def sublist3r():
-    if vpn is not False:
-        vpncheck()
+    print("\n\n\033[1;31mRunning Sublist3r \n\033[1;37m")
     sublist3rFileName = ("output/" + domain + "_sublist3r.txt")
     Subcmd = (("python bin/Sublist3r/sublist3r.py -v -t 15 -d %s -o " + sublist3rFileName) % (domain))
     print("\n\033[1;31mRunning Command: \033[1;37m" + Subcmd)
@@ -82,8 +81,7 @@ def sublist3r():
 
 
 def sublist3rBrute():
-    if vpn is not False:
-        vpncheck()
+    print("\n\n\033[1;31mRunning Sublist3r \n\033[1;37m")
     sublist3rFileName = ("output/" + domain + "_sublist3r.txt")
     Subcmd = (("python bin/Sublist3r/sublist3r.py -v -b -t 15 -d %s -o " + sublist3rFileName) % (domain))
     print("\n\033[1;31mRunning Command: \033[1;37m" + Subcmd)
@@ -94,8 +92,7 @@ def sublist3rBrute():
 
 
 def enumall():
-    if vpn is not False:
-        vpncheck()
+    print("\n\n\033[1;31mRunning Enumall \n\033[1;37m")
     enumallCMD = "python bin/domain/enumall.py %s" % (domain)
     print("\n\033[1;31mRunning Command: \033[1;37m" + enumallCMD)
     os.system(enumallCMD)
@@ -104,8 +101,7 @@ def enumall():
 
 
 def massdns():
-    if vpn is not False:
-        vpncheck()
+    print("\n\n\033[1;31mRunning massdns \n\033[1;37m")
     if bruteall is not False:
         massdnsCMD = (
             "./bin/subbrute/subbrute.py -s ./bin/sublst/all.txt " + domain + " | ./bin/massdns/bin/massdns -r resolvers.txt -t A -a -o -w ./output/" + domain + "-massdns.txt -")
@@ -122,15 +118,16 @@ def massdns():
 
 
 def knockpy():
-    if vpn is not False:
-        vpncheck()
+    print("\n\n\033[1;31mRunning Knock \n\033[1;37m")
     knockpyCmd = ("python bin/knockpy/knockpy/knockpy.py -c " + domain)
     print("\n\033[1;31mRunning Command: \033[1;37m" + knockpyCmd)
     os.system(knockpyCmd)
+    rootdomainStrip = domain.replace(".", "_")
+    knockpyFilenameInit = ("output/" + domain + "_knock.csv")
+    os.system("mv " + rootdomainStrip + "* " + knockpyFilenameInit)
+    time.sleep(1)
+    knockpySubs = []
     try:
-        knockpyFilenameInit = ("output/" + domain + "_knock.csv")
-        time.sleep(1)
-        knockpySubs = []
         with open(knockpyFilenameInit, 'rb') as f:
             reader = csv.reader(f, delimiter=',')
             for row in reader:
@@ -141,22 +138,23 @@ def knockpy():
             hosts = "".join(hosts)
             f1.writelines("\n" + hosts)
         f1.close()
-        time.sleep(1)
     except:
-        pass
+        print("\nKnock File Error\n")
+    time.sleep(1)
 
 
 def eyewitness(filename):
+    print("\n\n\033[1;31mRunning EyeWitness  \n\033[1;37m")
     rootdomain = domain
     EWHTTPScriptIPS = (
         "python bin/EyeWitness/EyeWitness.py -f " + filename + " --active-scan --no-prompt --headless  -d " + "output/" + rootdomain + "-" + time.strftime(
-            '%m-%d-%y-%H-%M') + "-Sublist3r-EW ")
+            '%m-%d-%y-%H-%M') + "-EW ")
     if vpn is not False:
         print(
             "\n\033[1;31mIf not connected to VPN manually run the following command on reconnect:\n\033[1;37m" + EWHTTPScriptIPS)
         vpncheck()
-        print("\n\033[1;31mRunning Command: \033[1;37m" + EWHTTPScriptIPS)
-        os.system(EWHTTPScriptIPS)
+    print("\n\033[1;31mRunning Command: \033[1;37m" + EWHTTPScriptIPS)
+    os.system(EWHTTPScriptIPS)
     print("\a")
 
 
@@ -238,60 +236,86 @@ def subdomainfile():
     subdomainAllFile = ("output/" + domain + "-all.txt")
     knockpyFileName = ("output/" + domain + "_knock.csv.txt")
     massdnsFileName = ("output/" + domain + "-massdns.txt")
+    f1 = open(subdomainAllFile, "w")
+    f1.close()
     print("\nOpening Sublist3r File\n")
     try:
         with open(sublist3rFileName) as f:
             SubHosts = f.read().splitlines()
         f.close()
         time.sleep(2)
-        f1 = open(subdomainAllFile, "w")
+        subdomainCounter = 0
+        f1 = open(subdomainAllFile, "a")
+        f1.writelines("\n\nsublist3r")
         for hosts in SubHosts:
             hosts = "".join(hosts)
             f1.writelines("\n" + hosts)
+            subdomainCounter = subdomainCounter + 1
         f1.close()
+        os.remove(sublist3rFileName)
+        print("\n" + str(subdomainCounter) + " Subdomains discovered by Sublist3r")
     except:
-        pass
+        print("\nError Opening Sublist3r File!\n")
     print("\nOpening Enumall File\n")
     try:
         with open(enumallFileName) as f:
             SubHosts = f.read().splitlines()
         f.close()
         time.sleep(2)
+        subdomainCounter = 0
         f1 = open(subdomainAllFile, "a")
+        f1.writelines("\n\nenumall")
         for hosts in SubHosts:
             hosts = "".join(hosts)
             f1.writelines("\n" + hosts)
+            subdomainCounter = subdomainCounter + 1
         f1.close()
+        os.remove(enumallFileName)
+        enumallFileNamecsv = (domain + ".csv")
+        os.remove(enumallFileNamecsv)
+        print("\n" + str(subdomainCounter) + " Subdomains discovered by Enumall")
     except:
-        pass
+        print("\nError Opening Enumall File!\n")
     print("\nOpening Knock File\n")
     try:
         with open(knockpyFileName) as f:
             SubHosts = f.read().splitlines()
         f.close()
         time.sleep(2)
+        subdomainCounter = 0
         f1 = open(subdomainAllFile, "a")
+        f1.writelines("\n\nknock")
         for hosts in SubHosts:
             hosts = "".join(hosts)
             f1.writelines("\n" + hosts)
+            subdomainCounter = subdomainCounter + 1
         f1.close()
+        knockpyFileNamecsv = ("output/" + domain + "_knock.csv")
+        os.remove(knockpyFileName)
+        os.remove(knockpyFileNamecsv)
+        print("\n" + str(subdomainCounter) + " Subdomains discovered by Knock")
     except:
-        pass
+        print("\nError Opening Knock File!\n")
     print("\nOpening massdns File\n")
     try:
         with open(massdnsFileName) as f:
             SubHosts = f.read().splitlines()
         f.close()
         time.sleep(2)
+        subdomainCounter = 0
         f1 = open(subdomainAllFile, "a")
+        f1.writelines("\n\nmassdns")
         for hosts in SubHosts:
             hosts = hosts.split(".	")[0]
             if domain in hosts:
                 hosts = "".join(hosts)
                 f1.writelines("\n" + hosts)
+                subdomainCounter = subdomainCounter + 1
         f1.close()
+        os.remove(massdnsFileName)
+        print("\n" + str(subdomainCounter) + " Subdomains discovered by massdns")
     except:
-        pass
+        print("\nError Opening massdns File!\n")
     print("\nCombining Domains Lists\n")
     domainList = open(subdomainAllFile, 'r')
     uniqueDomains = set(domainList)
@@ -310,19 +334,13 @@ def subdomainfile():
                     uniqueDomainsOut.writelines("http://%s" % domains + ":8080" + "\n")
     uniqueDomainsOut.close()
     time.sleep(2)
-    enumallFileNamecsv = (domain + ".csv")
     rootdomainStrip = domain.replace(".", "_")
     print("\nCleaning Up Old Files\n")
     try:
-        os.remove(sublist3rFileName)
-        os.remove(enumallFileName)
-        os.remove(enumallFileNamecsv)
-        os.remove(knockpyFileName)
-        os.remove(massdnsFileName)
         os.system("rm " + domain + "*")
         os.system("rm " + rootdomainStrip + "*")
     except:
-        pass
+        print("\nError Removing Files!\n")
     eyewitness(subdomainUniqueFile)
 
 
@@ -332,6 +350,7 @@ def vpncheck():
     if "Comcast" in vpnck.content:
         print("\n\033[1;31mNot connected via VPN \033[1;37m")
         print("\n" + vpnck.content)
+        print("\n\033[1;31mQuitting PyBrute... \033[1;37m")
         quit()
     else:
         print("\n\033[1;31mConnected via VPN \033[1;37m")
@@ -352,6 +371,8 @@ if __name__ == "__main__":
     quick = args.quick
     bruteall = args.bruteall
     fresh = args.fresh
+    if vpn is not False:
+        vpncheck()
     if fresh is not False:
         os.system("rm -r output")
         newpath = r'output'
@@ -376,4 +397,5 @@ if __name__ == "__main__":
                 subdomainfile()
         else:
             print("\nPlease provide a domain. Ex. -d example.com")
-    print("\nPyBrute Out")
+    print("\n\033[1;34mAll your subdomain are belong to us\033[1;37m")
+    print("\nPyBrute Out\nThanks for hacking with us.")
