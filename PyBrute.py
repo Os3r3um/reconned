@@ -56,17 +56,18 @@ def banner():
             print("  - " + file)
         signal(SIGALRM, lambda x: 1 / 0)
         try:
-            alarm(10)
+            alarm(5)
             RemoveQ = raw_input("\nWould you like to remove the files? [y/n]: ")
             if RemoveQ.lower() == "y":
                 os.system("rm *.csv")
                 os.system("rm *.lst")
-                print("Files removed\nStarting PyBrute...")
+                print("\nFiles removed\nStarting PyBrute...")
+                time.sleep(5)
             else:
-                print("Files not removed\nStarting PyBrute...")
+                print("\nThank you.\nPlease wait...")
+                time.sleep(5)
         except:
-            print("\nError or No User Input\nFiles not removed\nStarting PyBrute...")
-        time.sleep(2)
+            print("\n\nStarting PyBrute...")
 
 
 def sublist3r():
@@ -76,7 +77,7 @@ def sublist3r():
     Subcmd = (("python bin/Sublist3r/sublist3r.py -v -t 15 -d %s -o " + sublist3rFileName) % (domain))
     print("\n\033[1;31mRunning Command: \033[1;37m" + Subcmd)
     os.system(Subcmd)
-    print("\n\033[1;31mSublis3r Complete\033[1;37m")
+    print("\n\033[1;31mSublist3r Complete\033[1;37m")
     time.sleep(1)
 
 
@@ -87,7 +88,7 @@ def sublist3rBrute():
     Subcmd = (("python bin/Sublist3r/sublist3r.py -v -b -t 15 -d %s -o " + sublist3rFileName) % (domain))
     print("\n\033[1;31mRunning Command: \033[1;37m" + Subcmd)
     os.system(Subcmd)
-    print("\n\033[1;31mSublis3r Complete\033[1;37m")
+    print("\n\033[1;31mSublist3r Complete\033[1;37m")
     time.sleep(1)
     eyewitness(sublist3rFileName)
 
@@ -121,15 +122,12 @@ def massdns():
 
 
 def knockpy():
-    rootdomainStrip = domain.replace(".", "_")
-    os.system("rm " + rootdomainStrip + "*")
     if vpn is not False:
         vpncheck()
     knockpyCmd = ("python bin/knockpy/knockpy/knockpy.py -c " + domain)
     print("\n\033[1;31mRunning Command: \033[1;37m" + knockpyCmd)
     os.system(knockpyCmd)
     try:
-        filenameKnock = (rootdomainStrip + "*")
         knockpyFilenameInit = ("output/" + domain + "_knock.csv")
         time.sleep(1)
         knockpySubs = []
@@ -144,8 +142,6 @@ def knockpy():
             f1.writelines("\n" + hosts)
         f1.close()
         time.sleep(1)
-        os.system("rm " + knockpyFilenameInit)
-        os.system("rm " + filenameKnock + ".csv")
     except:
         pass
 
@@ -176,7 +172,7 @@ def upgradeFiles():
     os.system(sublist3rUpgrade)
     subInstallReq = ("sudo pip install -r bin/Sublist3r/requirements.txt")
     os.system(subInstallReq)
-    print("Sublis3r Installed\n")
+    print("Sublist3r Installed\n")
     eyeWitnessUpgrade = ("git clone https://github.com/ChrisTruncer/EyeWitness.git ./bin/EyeWitness")
     print("\n\033[1;31mInstalling EyeWitness \033[1;37m" + eyeWitnessUpgrade)
     os.system(eyeWitnessUpgrade)
@@ -242,6 +238,7 @@ def subdomainfile():
     subdomainAllFile = ("output/" + domain + "-all.txt")
     knockpyFileName = ("output/" + domain + "_knock.csv.txt")
     massdnsFileName = ("output/" + domain + "-massdns.txt")
+    print("\nOpening Sublist3r File\n")
     try:
         with open(sublist3rFileName) as f:
             SubHosts = f.read().splitlines()
@@ -254,6 +251,7 @@ def subdomainfile():
         f1.close()
     except:
         pass
+    print("\nOpening Enumall File\n")
     try:
         with open(enumallFileName) as f:
             SubHosts = f.read().splitlines()
@@ -266,6 +264,7 @@ def subdomainfile():
         f1.close()
     except:
         pass
+    print("\nOpening Knock File\n")
     try:
         with open(knockpyFileName) as f:
             SubHosts = f.read().splitlines()
@@ -278,6 +277,7 @@ def subdomainfile():
         f1.close()
     except:
         pass
+    print("\nOpening massdns File\n")
     try:
         with open(massdnsFileName) as f:
             SubHosts = f.read().splitlines()
@@ -292,6 +292,7 @@ def subdomainfile():
         f1.close()
     except:
         pass
+    print("\nCombining Domains Lists\n")
     domainList = open(subdomainAllFile, 'r')
     uniqueDomains = set(domainList)
     domainList.close()
@@ -308,14 +309,18 @@ def subdomainfile():
                 if ports is not False:
                     uniqueDomainsOut.writelines("http://%s" % domains + ":8080" + "\n")
     uniqueDomainsOut.close()
-    time.sleep(5)
+    time.sleep(2)
     enumallFileNamecsv = (domain + ".csv")
+    rootdomainStrip = domain.replace(".", "_")
+    print("\nCleaning Up Old Files\n")
     try:
         os.remove(sublist3rFileName)
         os.remove(enumallFileName)
         os.remove(enumallFileNamecsv)
         os.remove(knockpyFileName)
         os.remove(massdnsFileName)
+        os.system("rm " + domain + "*")
+        os.system("rm " + rootdomainStrip + "*")
     except:
         pass
     eyewitness(subdomainUniqueFile)
