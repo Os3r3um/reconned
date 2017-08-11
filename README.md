@@ -30,7 +30,7 @@ Install Required Python Modules: sudo pip install -r requirements.txt
 Install Tools: python PyBrute.py --install
 
 Example 1: python PyBrute.py -d example.com
-Uses subdomain example.com with no brutefoce (Sublist3r enumall, Knock)
+Uses subdomain example.com (Sublist3r enumall, Knock)
 
 Example 2: python PyBrute.py -d example.com -b -p --vpn
 Uses subdomain example.com with seclist subdomain list bruteforcing (massdns, subbrute, Sublist3r and enumall), adds ports 8443/8080 and checks if on VPN
