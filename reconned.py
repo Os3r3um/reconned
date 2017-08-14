@@ -8,7 +8,7 @@ __author__ = 'Caleb Kinney'
 
 def get_args():
     parser = argparse.ArgumentParser(
-        description='pyRecon')
+        description='reconned')
     parser.add_argument(
         '-d', '--domain', type=str, help='Domain', required=False, default=False)
     parser.add_argument(
@@ -39,17 +39,18 @@ if not os.path.exists(newpath):
 
 
 def banner():
-    print("\033[1;31m              ______ ")
-    print("\033[1;31m             (_____ \    ")
-    print("\033[1;31m  ____  _   _ _____) )_____  ____ ___  ____ ")
-    print("\033[1;31m |  _ \| | | |  __  /| ___ |/ ___) _ \|  _ \ ")
-    print("\033[1;31m | |_| | |_| | |  \ \| ____( (__| |_| | | | | ")
-    print("\033[1;31m |  __/ \__  |_|   |_|_____)\____)___/|_| |_| ")
-    print("\033[1;31m |_|   (____/  \033[1;34m OrOneEqualsOne.com\033[1;m")
+    print("""\033[1;31m
+                                             _ 
+                                            | |
+     _ __ ___  ___ ___  _ __  _ __   ___  __| |
+    | '__/ _ \/ __/ _ \| '_ \| '_ \ / _ \/ _` |
+    | | |  __/ (_| (_) | | | | | | |  __/ (_| |
+    |_|  \___|\___\___/|_| |_|_| |_|\___|\__,_|
+    \033[1;34m\t\t\t     OrOneEqualsOne.com\033[1;m""")
     globpath = ("*.csv")
     globpath2 = ("*.lst")
     if (next(glob.iglob(globpath), None)) or (next(glob.iglob(globpath2), None)):
-        print("\nThe following files may be left over from failed pyRecon attempts:")
+        print("\nThe following files may be left over from failed reconned attempts:")
         for file in glob.glob(globpath):
             print("  - " + file)
         for file in glob.glob(globpath2):
@@ -61,13 +62,13 @@ def banner():
             if RemoveQ.lower() == "y":
                 os.system("rm *.csv")
                 os.system("rm *.lst")
-                print("\nFiles removed\nStarting pyRecon...")
+                print("\nFiles removed\nStarting reconned...")
                 time.sleep(5)
             else:
                 print("\nThank you.\nPlease wait...")
                 time.sleep(5)
         except:
-            print("\n\nStarting pyRecon...")
+            print("\n\nStarting reconned...")
 
 
 def sublist3r():
@@ -350,7 +351,7 @@ def vpncheck():
     if "Comcast" in vpnck.content:
         print("\n\033[1;31mNot connected via VPN \033[1;37m")
         print("\n" + vpnck.content)
-        print("\n\033[1;31mQuitting pyRecon... \033[1;37m")
+        print("\n\033[1;31mQuitting reconned... \033[1;37m")
         quit()
     else:
         print("\n\033[1;31mConnected via VPN \033[1;37m")
@@ -398,4 +399,3 @@ if __name__ == "__main__":
         else:
             print("\nPlease provide a domain. Ex. -d example.com")
     print("\n\033[1;34mAll your subdomain are belong to us\033[1;37m")
-    print("\npyRecon Out\nThanks for hacking with us.")

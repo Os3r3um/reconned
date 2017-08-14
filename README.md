@@ -1,13 +1,15 @@
 # Recon
 Bug Bounty Hunting Recon Script
 
-**PyBrute is now pyRecon - New Name, Same Great Recon!**
+**PyBrute is now reconned - New Name, Same Great Recon!**
 
 **Gist:** Some ~~terrible~~ continually updated python code leveraging some awesome tools that I use for bug bounty reconnaissance. 
 
-pyRecon uses several subdomain enumeration tools and wordlists to create a unique list of subdmains that are passed to EyeWitness for reporting with categorized screenshots, server response headers and signature based default credential checking. *(resources are saved to ./bin and output is saved to ./output)*
+** The tools contained in reconned requires Kali Linux ** 
 
-Initial Install: *python pyRecon.py --install*
+reconned uses several subdomain enumeration tools and wordlists to create a unique list of subdmains that are passed to EyeWitness for reporting with categorized screenshots, server response headers and signature based default credential checking. *(resources are saved to ./bin and output is saved to ./output)*
+
+Initial Install: *python reconned.py --install*
 
 **_NOTE: This is an active recon – only perform on applications that you have permission to test against._**
 
@@ -29,18 +31,18 @@ Initial Install: *python pyRecon.py --install*
 ````
 First Step:
 Install Required Python Modules: sudo pip install -r requirements.txt
-Install Tools: python pyRecon.py --install
+Install Tools: python reconned.py --install
 
-Example 1: python pyRecon.py -d example.com
+Example 1: python reconned.py -d example.com
 Uses subdomain example.com (Sublist3r enumall, Knock)
 
-Example 2: python pyRecon.py -d example.com -b -p --vpn
+Example 2: python reconned.py -d example.com -b -p --vpn
 Uses subdomain example.com with seclist subdomain list bruteforcing (massdns, subbrute, Sublist3r and enumall), adds ports 8443/8080 and checks if on VPN
 
-Example 3: python pyRecon.py -d example.com -b --bruteall
+Example 3: python reconned.py -d example.com -b --bruteall
 Uses subdomain example.com with large-all.txt bruteforcing (massdns, subbrute, Sublist3r and enumall)
 
-Example 4: python pyRecon.py -d example.com --quick
+Example 4: python reconned.py -d example.com --quick
 Uses subdomain example.com and only Sublist3r (+subbrute)
 
 Note: --bruteall must be used with the -b flag
