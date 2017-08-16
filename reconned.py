@@ -1,4 +1,5 @@
 import argparse, os, requests, time, csv, datetime, glob, subprocess
+import ConfigParser, smtplib
 from signal import signal, alarm, SIGALRM
 
 today = datetime.date.today()
@@ -29,6 +30,8 @@ def get_args():
         '--bruteall', help='Bruteforce JHaddix All', nargs='?', default=False)
     parser.add_argument(
         '--fresh', help='Remove output Folder', nargs='?', default=False)
+    parser.add_argument(
+        '--notify', help='Notify when script completed', nargs='?', default=False)
 
     return parser.parse_args()
 
@@ -358,6 +361,48 @@ def vpncheck():
         print("\n" + vpnck.content)
         time.sleep(5)
 
+def notified():
+    notifySub = ("Reconned Script Finished")
+    notifyMsg = ("Reconned Script Finished for " + domain)
+    Config = ConfigParser.ConfigParser()
+    Config.read("./ext/notifycfg.ini")
+    if (Config.get('Pushover', 'enable')) == "True":
+        poToken = (Config.get('Pushover', 'token'))
+        poUser = (Config.get('Pushover', 'user'))
+        if "device" in Config.options('Pushover'):
+            poDevice = (Config.get('Pushover', 'device'))
+            poRequestPayload = {'token': poToken, 'user': poUser, 'device': poDevice, 'title': poTitle,
+                                'message': poMsg}
+        else:
+            poRequestPayload = {'token': poToken, 'user': poUser, 'title': notifySub, 'message': notifyMsg}
+            poValidatePayload = {"token": poToken, 'user': poUser}
+            poValidate = requests.post('https://api.pushover.net/1/users/validate.json', data=(poValidatePayload))
+            poJsonV = poValidate.json()
+            if poJsonV['status'] == 1:
+                print("\nPushover Account Validated\n")
+                poRequest = requests.post('https://api.pushover.net/1/messages.json', data=(poRequestPayload))
+                poJsonR = poRequest.json()
+                if poJsonV['status'] == 1:
+                    print("\nPushover Account Notified\n")
+                else:
+                    print("\nError - Pushover Account Not Notified\n")
+            else:
+                print("\nError - Pushover Account Not Validated\n")
+    if (Config.get('Email', 'enable')) == "True":
+        gmailUser = (Config.get('Email', 'user'))
+        gmailPass = (Config.get('Email', 'password'))
+        try:
+            server = smtplib.SMTP('smtp.gmail.com', 587)
+            server.starttls()
+            server.login(gmailUser, gmailPass)
+            subject = "Reconned Script Complete"
+            text = ("Reconned Script Complete for " + domain)
+            msg = 'Subject: {}\n\n{}'.format(subject, text)
+            server.sendmail(gmailUser, gmailUser, msg)
+            server.quit()
+            print("\nEmail Notification Sent\n")
+        except:
+            print("\nError - Email Notification Not Sent\n")
 
 if __name__ == "__main__":
     banner()
@@ -372,6 +417,7 @@ if __name__ == "__main__":
     quick = args.quick
     bruteall = args.bruteall
     fresh = args.fresh
+    notify = args.notify
     if vpn is not False:
         vpncheck()
     if fresh is not False:
@@ -396,6 +442,8 @@ if __name__ == "__main__":
                 enumall()
                 knockpy()
                 subdomainfile()
+        if notify is not False:
+            notified()
         else:
             print("\nPlease provide a domain. Ex. -d example.com")
     print("\n\033[1;34mAll your subdomain are belong to us\033[1;37m")
