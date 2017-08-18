@@ -1,5 +1,8 @@
 # Reconned
-Bug Bounty Hunting Recon Script
+
+# This page has moved to https://github.com/reconned/domained! 
+
+**NO LONGER UPDATED HERE**
 
 **PyBrute is now Reconned - New Name, Same Great Recon!**
 
