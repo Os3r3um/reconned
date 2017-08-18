@@ -1,6 +1,6 @@
 # Reconned
 
-# This page has moved to https://github.com/reconned/domained! 
+# This page has moved to https://github.com/reconned/domained 
 
 **NO LONGER UPDATED HERE**
 
